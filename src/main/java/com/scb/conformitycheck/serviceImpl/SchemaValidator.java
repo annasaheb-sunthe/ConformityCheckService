@@ -26,8 +26,10 @@ public class SchemaValidator {
 		boolean validationResult = true;
 		
 		try {
+//			File xsdFile = new File("D:/10641260/Projects/2018/SCB/Microservices PoC/Sample Data/STD_FORMAT/pacs.008.001.04.xsd");
+//			File xmlFile = new File("D:/10641260/Projects/2018/SCB/Microservices PoC/Sample Data/STD_FORMAT/OutwardCreditTransferRequestInvalid.xml");
 			File xsdFile = new File("D:/10641260/Projects/2018/SCB/Microservices PoC/Sample Data/STD_FORMAT/pacs.008.001.04.xsd");
-			File xmlFile = new File("D:/10641260/Projects/2018/SCB/Microservices PoC/Sample Data/STD_FORMAT/OutwardCreditTransferRequestInvalid.xml");
+			File xmlFile = new File("D:/10641260/Projects/2018/SCB/Microservices PoC/Sample Data/STD_FORMAT/AccountBalanceEnquiryRequest.xml");
 			
 			System.out.println("Creating schema factory....");
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

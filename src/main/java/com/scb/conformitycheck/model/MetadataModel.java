@@ -1,8 +1,5 @@
 package com.scb.conformitycheck.model;
 
-import java.util.Date;
-
-import javax.inject.Named;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

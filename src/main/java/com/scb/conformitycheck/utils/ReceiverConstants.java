@@ -9,4 +9,5 @@ public interface ReceiverConstants {
 	public static final String GET_METADATA_TYPE_URL = "/getMetadataByType";
 	public static final String MODIFY_METADATA_URL = "/modifyMetadata";
 	public static final String GET_METADATA_BY_ID_URL = "/getMetadata/{metadataId}";
+	public static final String DELETE_METADATA_URL = "/deleteMetadataModel/{MetadataId}";
 }

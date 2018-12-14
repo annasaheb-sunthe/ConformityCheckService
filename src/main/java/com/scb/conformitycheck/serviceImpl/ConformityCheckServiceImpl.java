@@ -170,6 +170,11 @@ public class ConformityCheckServiceImpl implements ConformityCheckService {
 		return obj;
 	}
 
+	@Override
+	public void DeleteMetadataModel(long metadataId) {
+		metadataRepository.delete(getMetadataById(metadataId));
+	}
+
 	private MetadataModel getMetadataModel(RequestData requestData) {
 		return new MetadataModel().builder().transactionType(requestData.getTransactionType())
 				.transactionSubType(requestData.getTransactionSubType()).messageType(requestData.getPayloadFormat())

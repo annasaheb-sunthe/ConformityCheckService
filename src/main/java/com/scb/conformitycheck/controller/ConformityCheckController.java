@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scb.conformitycheck.model.AuditLog;
 import com.scb.conformitycheck.model.MetadataModel;
 import com.scb.conformitycheck.model.RequestData;
 import com.scb.conformitycheck.model.ResponseMessage;
 import com.scb.conformitycheck.service.ConformityCheckService;
 import com.scb.conformitycheck.service.CustomerConformityService;
+import com.scb.conformitycheck.serviceImpl.InternalApiInvoker;
 import com.scb.conformitycheck.utils.ReceiverConstants;
+import com.scb.conformitycheck.utils.ServiceUtil;
 
 import lombok.extern.log4j.Log4j2;
 
-//@Controller
-//@Log4j2
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Component
 @RestController 
 @Log4j2
@@ -37,23 +37,35 @@ import lombok.extern.log4j.Log4j2;
 public class ConformityCheckController {
 	@Autowired
 	private CustomerConformityService customerConformityService;
+	
 	@Autowired
 	private ConformityCheckService conformityCheckService;
+	
+	@Autowired
+	private ServiceUtil commonMethods;
+	
+	@Autowired
+	private InternalApiInvoker internalApiInvoker;
 
 	@RequestMapping(value = ReceiverConstants.CONFORMITY_CHECK_REQUEST_HANDLE_URL, produces = { "application/json", "application/xml" })
 	public ResponseEntity<ResponseMessage> requestHandle(@RequestBody RequestData requestData) {
 		log.info("RequestData - Transaction type : " + requestData.getTransactionType() 
 		+ ", Transaction sub type : " + requestData.getTransactionSubType() + ", payload format: " + requestData.getPayloadFormat());
+		
+		AuditLog auditLog = commonMethods.getAuditLog(requestData, "INITIATED", "Request for conformity check initiated");
+		ResponseEntity<AuditLog> responseAuditLog = internalApiInvoker.auditLogApiCall(auditLog);
+		
 		//log.info("ConformitycheckRequestController - Request data : " + requestData);
 		ResponseMessage responseMessage = conformityCheckService.validateRequest(requestData);
 		ResponseEntity<ResponseMessage> re = null; 
 		
-//		if (responseMessage.getResponseCode() == 200) {
-//			re = new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
-//		} else {
-//			re = new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.CONFLICT);
-//		}
-		
+		if (responseMessage.getResponseCode() != 200) {
+			auditLog = commonMethods.getAuditLog(requestData, "FAILED", responseMessage.getResponseMessage());
+		} else {
+			auditLog = commonMethods.getAuditLog(requestData, "COMPLETED", "Request validation for transaction type: " + requestData.getTransactionType() + " successfully");
+		}
+
+		responseAuditLog = internalApiInvoker.auditLogApiCall(auditLog);
 		return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
 	}
 
@@ -121,4 +133,10 @@ public class ConformityCheckController {
 		log.info("MetadataModel resturned from DB  : " + metadata);
 		return new ResponseEntity<MetadataModel>(metadata, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = ReceiverConstants.DELETE_METADATA_URL, method = RequestMethod.DELETE, produces = {"application/xml", "application/json"})
+    public ResponseEntity<Void> deleteBusinessRule(@PathVariable("MetadataId") long MetadataId) {
+		conformityCheckService.DeleteMetadataModel(MetadataId);
+        return new ResponseEntity<Void>(HttpStatus.OK);  	
+    }
 }

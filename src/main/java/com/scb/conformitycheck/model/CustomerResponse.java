@@ -3,6 +3,7 @@ package com.scb.conformitycheck.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
