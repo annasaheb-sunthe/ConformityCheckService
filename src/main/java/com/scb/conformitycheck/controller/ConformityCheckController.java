@@ -135,8 +135,10 @@ public class ConformityCheckController {
 	}
 	
 	@RequestMapping(value = ReceiverConstants.DELETE_METADATA_URL, method = RequestMethod.DELETE, produces = {"application/xml", "application/json"})
-    public ResponseEntity<Void> deleteBusinessRule(@PathVariable("MetadataId") long MetadataId) {
+    	public ResponseEntity<Void> deleteBusinessRule(@PathVariable("MetadataId") long MetadataId) {
+		log.info("Received metadataId :"+ MetadataId);		
 		conformityCheckService.DeleteMetadataModel(MetadataId);
-        return new ResponseEntity<Void>(HttpStatus.OK);  	
+		log.info("Deleted metadata records with id  :" + MetadataId);
+        	return new ResponseEntity<Void>(HttpStatus.OK);  	
     }
 }
